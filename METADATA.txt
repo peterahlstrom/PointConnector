@@ -1,0 +1,15 @@
+[general]
+name=Point Connector
+qgisMinimumVersion=2.0
+description=A QGIS plugin used for creating lines between points following a from-to list
+version=0.5
+author=Peter Ahlstrom
+email=ahlstrom dot peter (at) gmail dot com
+tags=point, line, connect, csv, txt
+homepage=
+tracker=https://github.com/peterahlstrom/PointConnector/issues
+repository=https://github.com/peterahlstrom/PointConnector/
+icon=icon.png
+experimental=False
+deprecated=False
+

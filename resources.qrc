@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/PointConnector" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
