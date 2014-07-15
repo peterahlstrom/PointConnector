@@ -3,12 +3,12 @@
 /***************************************************************************
  PointConnector
                                  A QGIS plugin
- Draw lines between points
+ Creating lines between points following a from-to list.
                              -------------------
-        begin                : 2014-06-12
-        copyright            : (C) 2014 Peter Ahlstrom
-        email                : ahlstrom.peter@gmail.com
-
+        begin                : 2014-07-15
+        copyright            : (C) 2014 by Peter Ahlstrom
+        email                : ahlstrom (dot) peter (at) gmail (dot) com
+        git sha              : $Format:%H$
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,7 +22,14 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
-def classFactory(iface):
-    #Load PointConnector class from file PointConnector.
+
+# noinspection PyPep8Naming
+def classFactory(iface):  # pylint: disable=invalid-name
+    """Load PointConnector class from file PointConnector.
+
+    :param iface: A QGIS interface instance.
+    :type iface: QgsInterface
+    """
+    #
     from .point_connector import PointConnector
     return PointConnector(iface)

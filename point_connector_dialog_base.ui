@@ -49,6 +49,9 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="locale">
+    <locale language="English" country="UnitedKingdom"/>
+   </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
@@ -59,19 +62,25 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>23</x>
+     <x>10</x>
      <y>12</y>
-     <width>361</width>
+     <width>380</width>
      <height>71</height>
     </rect>
+   </property>
+   <property name="locale">
+    <locale language="English" country="UnitedKingdom"/>
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QLabel" name="pointFileLabel">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
         <property name="text">
-         <string>Point file:</string>
+         <string>Point file:    </string>
         </property>
        </widget>
       </item>
@@ -83,10 +92,19 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="placeholderText">
+         <string>*.shp</string>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="browsePointButton">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
         <property name="text">
          <string>Browse</string>
         </property>
@@ -98,8 +116,11 @@
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QLabel" name="pointFileLabel_2">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
         <property name="text">
-         <string>CSV file:</string>
+         <string>From-to file:</string>
         </property>
        </widget>
       </item>
@@ -111,10 +132,19 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
+        <property name="placeholderText">
+         <string>*.csv, *.txt</string>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="browseCsvButton">
+        <property name="locale">
+         <locale language="English" country="UnitedKingdom"/>
+        </property>
         <property name="text">
          <string>Browse</string>
         </property>

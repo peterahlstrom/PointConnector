@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
-#This script uploads a plugin package on the server.
-#Authors: A. Pasotti, V. Picavet
-
+"""This script uploads a plugin package on the server.
+        Authors: A. Pasotti, V. Picavet
+        git sha              : $TemplateVCSFormat
+"""
 
 import sys
 import getpass
@@ -18,8 +19,11 @@ VERBOSE = False
 
 
 def main(parameters, arguments):
-    #Main entry point.
-    
+    """Main entry point.
+
+    :param parameters: Command line parameters.
+    :param arguments: Command line arguments.
+    """
     address = "%s://%s:%s@%s:%s%s" % (
         PROTOCOL,
         parameters.username,
@@ -49,7 +53,14 @@ def main(parameters, arguments):
 
 
 def hide_password(url, start=6):
-    #Returns the http url with password part replaced with '*'.
+    """Returns the http url with password part replaced with '*'.
+
+    :param url: URL to upload the plugin to.
+    :type url: str
+
+    :param start: Position of start of password.
+    :type start: int
+    """
     start_position = url.find(':', start) + 1
     end_position = url.find('@')
     return "%s%s%s" % (
