@@ -1,7 +1,7 @@
 [general]
 name=Point Connector
 qgisMinimumVersion=2.0
-description=Creating lines between points following a from-to list.
+description=Creating lines between points following a from-to list
 category=Vector
 version=0.5
 author=Peter Ahlstrom
@@ -13,4 +13,3 @@ repository=https://github.com/peterahlstrom/PointConnector/
 icon=./icon.png
 experimental=False
 deprecated=False
-
