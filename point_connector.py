@@ -173,13 +173,13 @@ class PointConnector:
       self.iface.addPluginToVectorMenu("&PointConnector", self.action)
 
       self.iface.addToolBarIcon(self.action)
-      self.iface.addPluginToMenu("&PointConnector", self.action)
+      #self.iface.addPluginToMenu("&PointConnector", self.action)
 
     def unload(self):
         self.iface.removePluginVectorMenu("&PointConnector",self.action)
         self.iface.removeVectorToolBarIcon(self.action)
 
-        self.iface.removePluginMenu("&PointConnector",self.action)
+        #self.iface.removePluginMenu("&PointConnector",self.action)
         self.iface.removeToolBarIcon(self.action)
 
 
@@ -193,7 +193,8 @@ class PointConnector:
             csvPath = self.dlg.csvFileName
             pointPath = self.dlg.pointFileName 
             point_layer = QgsVectorLayer(pointPath, 'points', 'ogr') #shp-file with attribute field name
-            lines_layer = QgsVectorLayer('LineString', 'lines', 'memory') 
+            point_layer_crs = point_layer.crs().authid()
+            lines_layer = QgsVectorLayer('LineString?crs='+point_layer_crs, 'lines', 'memory')
             point_name_index = 0
             pr = lines_layer.dataProvider()
 
