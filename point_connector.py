@@ -217,14 +217,12 @@ class PointConnector:
                 geom = p.geometry()
                 attrs = p.attributes()
                 p = geom.asPoint()
-                time.sleep(0.01)
+                time.sleep(0.01) #Had a problem in an early version that the script crashed during this loop. Adding this solved it. I don't dare deleting it now...
                 points_dict[attrs[point_name_index]] = p #attrs[point_name_index] = name field
                 i += 1
                 progress.setValue(i)
             iface.messageBar().clearWidgets()
             QgsMapLayerRegistry().instance().addMapLayer(point_layer)
-            print len(points_dict)
-            print 'dict'
 
             #creating lines list from file
             lines_list = []
@@ -235,8 +233,6 @@ class PointConnector:
                 s = tuple(s.split(','))
                 lines_list.append(s)
             f.close()
-            print 'list done'
-            print lines_list
 
             #Progress bar widget
             progressMessageBar = iface.messageBar().createMessage("Drawing lines...")
@@ -266,14 +262,13 @@ class PointConnector:
                 i += 1
                 progress.setValue(i)
               else:
-                not_processed_list.append(line)
-            
+                not_processed_list.append(line)            
                 
             iface.messageBar().clearWidgets()
 
             # add lines layer to canvas
-            QgsMapLayerRegistry().instance().addMapLayer(lines_layer)
-            
+            QgsMapLayerRegistry().instance().addMapLayer(lines_layer)            
+
             if not not_processed_list:
                 QMessageBox.information(None, 'Success', 'All lines drawn without error')
             else:     
