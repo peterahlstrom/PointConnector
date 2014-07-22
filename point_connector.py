@@ -171,15 +171,11 @@ class PointConnector:
 
       self.iface.addVectorToolBarIcon(self.action)
       self.iface.addPluginToVectorMenu("&PointConnector", self.action)
-
       self.iface.addToolBarIcon(self.action)
-      #self.iface.addPluginToMenu("&PointConnector", self.action)
 
     def unload(self):
         self.iface.removePluginVectorMenu("&PointConnector",self.action)
         self.iface.removeVectorToolBarIcon(self.action)
-
-        #self.iface.removePluginMenu("&PointConnector",self.action)
         self.iface.removeToolBarIcon(self.action)
 
 
