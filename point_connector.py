@@ -162,24 +162,53 @@ class PointConnector:
 
         return action
 
+    # def initGui(self):
+    #     """Create the menu entries and toolbar icons inside the QGIS GUI."""
+
+    #     icon_path = ':/plugins/PointConnector/icon.png'
+    #     self.add_action(
+    #         icon_path,
+    #         text=self.tr(u'Connect points according to list.'),
+    #         callback=self.run,
+    #         parent=self.iface.mainWindow())
+
+
+    # def unload(self):
+    #     """Removes the plugin menu item and icon from QGIS GUI."""
+    #     for action in self.actions:
+    #         self.iface.removePluginMenu(
+    #             self.tr(u'&Point Connector'),
+    #             action)
+    #         self.iface.removeToolBarIcon(action)
+
     def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
+      self.action = QAction(QIcon(":/plugins/pointconnector/icon.png"), "PointConnector", self.iface.mainWindow())
+      self.action.setWhatsThis("Connect points")
+      self.action.setStatusTip("Connect points following a from-to list")
 
-        icon_path = ':/plugins/PointConnector/icon.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'Connect points according to list.'),
-            callback=self.run,
-            parent=self.iface.mainWindow())
+      QObject.connect(self.action, SIGNAL("triggered()"), self.run)
 
+      #if hasattr( self.iface, "addPluginToVectorMenu" ):
+      self.iface.addVectorToolBarIcon(self.action)
+      self.iface.addPluginToVectorMenu("&PointConnector", self.action)
+      #else:
+      self.iface.addToolBarIcon(self.action)
+      self.iface.addPluginToMenu("&PointConnector", self.action)
+
+      # icon_path = ':/plugins/pointconnector/icon.png'
+      # self.add_action(
+      #     icon_path,
+      #     text=self.tr(u'Connect points according to list.'),
+      #     callback=self.run,
+      #     parent=self.iface.mainWindow())
 
     def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
-        for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&Point Connector'),
-                action)
-            self.iface.removeToolBarIcon(action)
+      if hasattr( self.iface, "addPluginToVectorMenu" ):
+        self.iface.removePluginVectorMenu("&PointConnector",self.action)
+        self.iface.removeVectorToolBarIcon(self.action)
+      else:
+        self.iface.removePluginMenu("&PointConnector",self.action)
+        self.iface.removeToolBarIcon(self.action)
 
 
     def run(self):
