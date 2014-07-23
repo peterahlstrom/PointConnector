@@ -1,9 +1,9 @@
 [general]
-name=Point Connector
+name=PointConnector
 qgisMinimumVersion=2.0
 description=Creating lines between points following a from-to list
 category=Vector
-version=0.5
+version=0.6
 author=Peter Ahlstrom
 email=ahlstrom (dot) peter (at) gmail (dot) com
 tags=point, line, connect, csv, txt
