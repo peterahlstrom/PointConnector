@@ -6,7 +6,6 @@
  Creating lines between points following a from-to list.
                               -------------------
         begin                : 2014-07-15
-        git sha              : $Format:%H$
         copyright            : (C) 2014 by Peter Ahlstrom
         email                : ahlstrom (dot) peter (at) gmail (dot) com
  ***************************************************************************/
@@ -163,7 +162,7 @@ class PointConnector:
         return action
 
     def initGui(self):
-      self.action = QAction(QIcon(":/plugins/pointconnector/icon.png"), "PointConnector", self.iface.mainWindow())
+      self.action = QAction(QIcon(":/plugins/PointConnector/icon.png"), "PointConnector", self.iface.mainWindow())
       self.action.setWhatsThis("Connect points")
       self.action.setStatusTip("Connect points following a from-to list")
 
