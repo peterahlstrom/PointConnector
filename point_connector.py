@@ -185,8 +185,8 @@ class PointConnector:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result == 1:
-            csvPath = self.dlg.csvFileName
-            pointPath = self.dlg.pointFileName 
+            csvPath = self.dlg.csvPathLineEdit.text()
+            pointPath = self.dlg.pointPathLineEdit.text() 
             point_layer = QgsVectorLayer(pointPath, 'points', 'ogr') #shp-file with attribute field name
             point_layer_crs = point_layer.crs().authid()
             lines_layer = QgsVectorLayer('LineString?crs='+point_layer_crs, 'lines', 'memory')

@@ -42,7 +42,6 @@ class PointConnectorDialog(QtGui.QDialog, FORM_CLASS):
         lastShapeDir = self.settings.value("lastShapeDir", ".")
         pointFileName = QtGui.QFileDialog.getOpenFileName(self, 'Open File', lastShapeDir, 'ESRI Shape files (*.shp)')
         self.pointPathLineEdit.setText(pointFileName)
-        self.pointFileName = pointFileName
         (shpDir, shpFile) = os.path.split(pointFileName)
         self.settings.setValue("lastShapeDir", shpDir)
 
@@ -51,6 +50,5 @@ class PointConnectorDialog(QtGui.QDialog, FORM_CLASS):
         lastCsvDir = self.settings.value("lastCsvDir", ".")
         csvFileName = QtGui.QFileDialog.getOpenFileName(self, 'Open File', lastCsvDir, 'Text files (*.csv *.txt)')
         self.csvPathLineEdit.setText(csvFileName)
-        self.csvFileName = csvFileName
         (csvDir, csvFile) = os.path.split(csvFileName)
         self.settings.setValue("lastCsvDir", csvDir)
