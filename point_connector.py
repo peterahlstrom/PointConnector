@@ -30,6 +30,7 @@ import os.path
 import processing
 from qgis.utils import *
 import time
+import codecs
 
 
 
@@ -162,15 +163,18 @@ class PointConnector:
         return action
 
     def initGui(self):
-      self.action = QAction(QIcon(":/plugins/PointConnector/icon.png"), "PointConnector", self.iface.mainWindow())
-      self.action.setWhatsThis("Connect points")
-      self.action.setStatusTip("Connect points following a from-to list")
+        self.action = QAction(QIcon(":/plugins/PointConnector/icon.png"), "PointConnector", self.iface.mainWindow())
+        self.action.setWhatsThis("Connect points")
+        self.action.setStatusTip("Connect points following a from-to list")
 
-      QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
 
-      self.iface.addVectorToolBarIcon(self.action)
-      self.iface.addPluginToVectorMenu("&PointConnector", self.action)
-      self.iface.addToolBarIcon(self.action)
+        if hasattr(self.iface, "addPluginToVectorMenu"):
+            self.iface.addVectorToolBarIcon(self.action)
+            self.iface.addPluginToVectorMenu("&PointConnector", self.action)
+        else:
+            self.iface.addToolBarIcon(self.action)
+            self.iface.addPluginToMenu("&PointConnector", self.action)
 
     def unload(self):
         self.iface.removePluginVectorMenu("&PointConnector",self.action)
@@ -192,6 +196,20 @@ class PointConnector:
             lines_layer = QgsVectorLayer('LineString?crs='+point_layer_crs, 'lines', 'memory')
             point_name_index = 0
             pr = lines_layer.dataProvider()
+
+            # test if csv is valid
+            try:
+                f = codecs.open(csvPath, 'r', 'utf-8', errors = 'strict')
+                for line in f:
+                    pass
+            except UnicodeDecodeError:
+                QMessageBox.information(None, "Error", "PointConnector can not read csv-file. Try saving it with utf-8 encoding.")
+                return
+
+            else:
+                f = open(csvPath, 'r')
+
+
 
             lines_layer.startEditing()
             pr.addAttributes ([ QgsField('id', QVariant.Int), QgsField('from', QVariant.String), QgsField('to', QVariant.String)] )
@@ -222,12 +240,13 @@ class PointConnector:
 
             #creating lines list from file
             lines_list = []
-            f = open(csvPath, 'r')
+
             for line in f:
               line = line.split('\n')
               for s in line[:1]:
                 s = tuple(s.split(','))
                 lines_list.append(s)
+
             f.close()
 
             #Progress bar widget
@@ -271,5 +290,5 @@ class PointConnector:
                 error_list = []
                 for line in not_processed_list:
                     output_line = line[0], 'to', line[1]
-                    error_list.append(str(output_line))                    
+                    error_list.append(str(output_line))                  
                 QMessageBox.information(None, 'Error', str(len(not_processed_list))+' out of '+str(len(lines_list))+' line(s) not drawn.')
