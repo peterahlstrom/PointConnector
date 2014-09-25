@@ -31,6 +31,7 @@ import processing
 from qgis.utils import *
 import time
 import codecs
+import re
 
 
 
@@ -181,7 +182,6 @@ class PointConnector:
         self.iface.removeVectorToolBarIcon(self.action)
         self.iface.removeToolBarIcon(self.action)
 
-
     def run(self):
         # show the dialog
         self.dlg.show()
@@ -197,18 +197,34 @@ class PointConnector:
             point_name_index = 0
             pr = lines_layer.dataProvider()
 
-            # test if csv is valid
+            #test point file
             try:
-                f = codecs.open(csvPath, 'r', 'utf-8', errors = 'strict')
-                for line in f:
-                    pass
-            except UnicodeDecodeError:
-                QMessageBox.information(None, "Error", "PointConnector can not read csv-file. Try saving it with utf-8 encoding.")
+                p = open(pointPath, 'r')
+                p.close()
+            except IOError:
+                QMessageBox.information(None, "Error", "Shape-file not found. Check file path.")
                 return
 
-            else:
-                f = open(csvPath, 'r')
+            
+            # test if csv is valid
+            try:
+                f = codecs.open(csvPath, 'r', 'utf-8')
+                for line in f:
+                    pass
+                f = codecs.open(csvPath, 'r', 'utf-8')
 
+
+            except UnicodeDecodeError:
+                try:
+                    f = open(csvPath, 'r')
+                    re.search('\\\\', f) == None
+                    
+                except:
+                    QMessageBox.information(None, "Error", "PointConnector can not read csv-file. Try saving it with utf-8 encoding.")
+                    return
+            except IOError:
+                QMessageBox.information(None, "Error", "Csv-file not found. Check file path.")
+                return
 
 
             lines_layer.startEditing()
@@ -240,7 +256,6 @@ class PointConnector:
 
             #creating lines list from file
             lines_list = []
-
             for line in f:
               line = line.split('\n')
               for s in line[:1]:
