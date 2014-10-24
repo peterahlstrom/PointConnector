@@ -208,10 +208,10 @@ class PointConnector:
             
             # test if csv is valid
             try:
-                f = codecs.open(csvPath, 'r', 'utf-8')
+                f = codecs.open(csvPath, 'r', 'utf-8-sig')
                 for line in f:
                     pass
-                f = codecs.open(csvPath, 'r', 'utf-8')
+                f = codecs.open(csvPath, 'r', 'utf-8-sig')
 
 
             except UnicodeDecodeError:
@@ -248,20 +248,24 @@ class PointConnector:
                 attrs = p.attributes()
                 p = geom.asPoint()
                 time.sleep(0.01) #Had a problem in an early version that the script crashed during this loop. Adding this solved it. I don't dare deleting it now...
-                points_dict[attrs[point_name_index]] = p #attrs[point_name_index] = name field
+                key = attrs[point_name_index]
+                if type(key) == type(int()): #if name field in shp is int
+                    points_dict[str(key)] = p #attrs[point_name_index] = name field
+                else:
+                    points_dict[key] = p
                 i += 1
                 progress.setValue(i)
+                
             iface.messageBar().clearWidgets()
             QgsMapLayerRegistry().instance().addMapLayer(point_layer)
 
             #creating lines list from file
             lines_list = []
             for line in f:
-              line = line.split('\n')
+              line = line.splitlines()
               for s in line[:1]:
                 s = tuple(s.split(','))
                 lines_list.append(s)
-
             f.close()
 
             #Progress bar widget
@@ -292,7 +296,7 @@ class PointConnector:
                 i += 1
                 progress.setValue(i)
               else:
-                not_processed_list.append(line)            
+                not_processed_list.append(line)
                 
             iface.messageBar().clearWidgets()
 
@@ -302,8 +306,8 @@ class PointConnector:
             if not not_processed_list:
                 QMessageBox.information(None, 'Success', 'All lines drawn without error')
             else:     
-                error_list = []
-                for line in not_processed_list:
-                    output_line = line[0], 'to', line[1]
-                    error_list.append(str(output_line))                  
+                #error_list = []
+                #for line in not_processed_list:
+                #    output_line = line[0], 'to', line[1]
+                #    error_list.append(str(output_line))                  
                 QMessageBox.information(None, 'Error', str(len(not_processed_list))+' out of '+str(len(lines_list))+' line(s) not drawn.')
