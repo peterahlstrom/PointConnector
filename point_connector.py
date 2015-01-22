@@ -257,7 +257,7 @@ class PointConnector:
                 progress.setValue(i)
                 
             iface.messageBar().clearWidgets()
-            QgsMapLayerRegistry().instance().addMapLayer(point_layer)
+            QgsMapLayerRegistry.instance().addMapLayer(point_layer)
 
             #creating lines list from file
             lines_list = []
@@ -301,7 +301,7 @@ class PointConnector:
             iface.messageBar().clearWidgets()
 
             # add lines layer to canvas
-            QgsMapLayerRegistry().instance().addMapLayer(lines_layer)            
+            QgsMapLayerRegistry.instance().addMapLayer(lines_layer)            
 
             if not not_processed_list:
                 QMessageBox.information(None, 'Success', 'All lines drawn without error')
