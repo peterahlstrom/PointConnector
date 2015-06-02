@@ -6,22 +6,28 @@ A QGIS plugin used for creating lines between points following a from-to list.
 Usage
 -------
 
-Inputs:
-An ESRI shape-file with points. The first (or only) field should contain the joining attribute found in the csv-file.
-A comma separated txt-file (CSV-file) formatted like this: [from], [to]. Each row results in a straight line between the two corresponding points.
-When using special characters make sure the file is saved with utf-8 encoding.
+####Inputs:
 
-Example:
+* An ESRI shape-file with points or an existing point layer in the map document.
+The first (or only) field should contain the joining attribute found in the from-to list.
 
-Stockholm, Paris
+* A comma separated txt-file (CSV-file), or table in the map document, formatted like this: [from], [to].
+Each row results in a straight line between the two corresponding points.
 
-London, New York
+  Example:
 
-Paris, London
+  Stockholm, Paris
 
-...
+  London, New York
 
-Output:
+  Paris, London
+
+  ...
+
+When using special characters make sure the file is saved with utf-8 encoding or import the file to the document first.
+
+
+####Output:
 A layer with lines, each with from- and to-attributes.
 
 
@@ -37,7 +43,7 @@ PointConnector has also shown to be a useful tool for creating input to the FME 
 Licence
 -------
 
-This plugin was developed by Peter Ahlstrom in 2014.
+This plugin was developed by Peter Ahlstrom in 2014-2015.
 It is free software and licensed under the GNU General Public Licence v2.
 
 
