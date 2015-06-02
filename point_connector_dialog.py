@@ -23,6 +23,7 @@
 import os
 
 from PyQt4 import QtGui, uic, QtCore
+from qgis.utils import iface
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'point_connector_dialog_base.ui'))
@@ -52,3 +53,20 @@ class PointConnectorDialog(QtGui.QDialog, FORM_CLASS):
         self.csvPathLineEdit.setText(csvFileName)
         (csvDir, csvFile) = os.path.split(csvFileName)
         self.settings.setValue("lastCsvDir", csvDir)
+
+    # Populate comboBox
+    def populateComboBox(self):
+        self.pointsComboBox.clear()
+        self.csvComboBox.clear()
+        
+        points, csv = ['Choose layer...'], ['Choose layer...']
+        for layer in iface.mapCanvas().layers():
+            if hasattr(layer, 'geometryType'):
+                if layer.geometryType() == 0: 
+                    points.append(layer.name())
+                elif layer.geometryType() == 4:
+                    csv.append(layer.name())
+
+
+        self.pointsComboBox.addItems(points)
+        self.csvComboBox.addItems(csv)

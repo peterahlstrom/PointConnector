@@ -73,6 +73,8 @@ class PointConnector:
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'PointConnector')
         self.toolbar.setObjectName(u'PointConnector')
+        self.addedLayers=1
+
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -183,49 +185,83 @@ class PointConnector:
         self.iface.removeToolBarIcon(self.action)
 
     def run(self):
+
+        self.dlg.populateComboBox()
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
         if result == 1:
-            csvPath = self.dlg.csvPathLineEdit.text()
-            pointPath = self.dlg.pointPathLineEdit.text() 
-            point_layer = QgsVectorLayer(pointPath, 'points', 'ogr') #shp-file with attribute field name
-            point_layer_crs = point_layer.crs().authid()
-            lines_layer = QgsVectorLayer('LineString?crs='+point_layer_crs, 'lines', 'memory')
-            point_name_index = 0
-            pr = lines_layer.dataProvider()
-
-            #test point file
-            try:
-                p = open(pointPath, 'r')
-                p.close()
-            except IOError:
-                QMessageBox.information(None, "Error", "Shape-file not found. Check file path.")
-                return
-
+            # create layers dict
+            layers = {}
+            for layer in iface.mapCanvas().layers():
+                layers[layer.name()] = layer
             
-            # test if csv is valid
-            try:
-                f = codecs.open(csvPath, 'r', 'utf-8-sig')
-                for line in f:
-                    pass
-                f = codecs.open(csvPath, 'r', 'utf-8-sig')
+            #choose point-source
+            chosenPoint = self.dlg.pointsComboBox.currentText()
 
+            if chosenPoint != 'Choose layer...':
+                point_layer = layers[chosenPoint]
 
-            except UnicodeDecodeError:
+            else:
+                pointPath = self.dlg.pointPathLineEdit.text() 
+                point_layer = QgsVectorLayer(pointPath, 'points', 'ogr') #shp-file with attribute field name
+
                 try:
-                    f = open(csvPath, 'r')
-                    re.search('\\\\', f) == None
-                    
-                except:
-                    QMessageBox.information(None, "Error", "PointConnector can not read csv-file. Try saving it with utf-8 encoding.")
+                    p = open(pointPath, 'r')
+                    p.close()
+                except IOError:
+                    QMessageBox.information(None, "Error", "Shape-file not found. Check file path.")
                     return
-            except IOError:
-                QMessageBox.information(None, "Error", "Csv-file not found. Check file path.")
-                return
 
+            point_name_index = 0
+
+
+            # choose csv-source
+            lines_list = []
+            chosenCsv = self.dlg.csvComboBox.currentText()
+
+            if chosenCsv != 'Choose layer...':
+                csv_layer = layers[chosenCsv]
+                csv_features = processing.features(csv_layer)
+                for line in csv_features:
+                    attrs = line.attributes()
+                    lines_list.append((attrs[0], attrs[1]))
+            else:
+                csvPath = self.dlg.csvPathLineEdit.text()
+                # test if csv is valid
+                try:
+                    f = codecs.open(csvPath, 'r', 'utf-8-sig')
+                    for line in f:
+                        pass
+                    f = codecs.open(csvPath, 'r', 'utf-8-sig')
+
+                except UnicodeDecodeError:
+                    try:
+                        f = open(csvPath, 'r')
+                        re.search('\\\\', f) == None
+                        
+                    except:
+                        QMessageBox.information(None, "Error", "PointConnector can not read csv-file. Try saving it with utf-8 encoding or import it as a layer.")
+                        return
+                except IOError:
+                    QMessageBox.information(None, "Error", "Csv-file not found. Check file path or select a csv-layer.")
+                    return
+
+                #creating lines list from file
+                for line in f:
+                  line = line.splitlines()
+                  for s in line[:1]:
+                    s = tuple(s.split(','))
+                    lines_list.append(s)
+                f.close()
+                
+
+            point_layer_crs = point_layer.crs().authid()
+            lines_layer = QgsVectorLayer('LineString?crs='+point_layer_crs, 'PointConnector lines '+str(self.addedLayers), 'memory')
+            pr = lines_layer.dataProvider()
+            
 
             lines_layer.startEditing()
             pr.addAttributes ([ QgsField('id', QVariant.Int), QgsField('from', QVariant.String), QgsField('to', QVariant.String)] )
@@ -247,7 +283,6 @@ class PointConnector:
                 geom = p.geometry()
                 attrs = p.attributes()
                 p = geom.asPoint()
-                time.sleep(0.01) #Had a problem in an early version that the script crashed during this loop. Adding this solved it. I don't dare deleting it now...
                 key = attrs[point_name_index]
                 if type(key) == type(int()): #if name field in shp is int
                     points_dict[str(key)] = p #attrs[point_name_index] = name field
@@ -259,14 +294,6 @@ class PointConnector:
             iface.messageBar().clearWidgets()
             QgsMapLayerRegistry.instance().addMapLayer(point_layer)
 
-            #creating lines list from file
-            lines_list = []
-            for line in f:
-              line = line.splitlines()
-              for s in line[:1]:
-                s = tuple(s.split(','))
-                lines_list.append(s)
-            f.close()
 
             #Progress bar widget
             progressMessageBar = iface.messageBar().createMessage("Drawing lines...")
@@ -297,17 +324,15 @@ class PointConnector:
                 progress.setValue(i)
               else:
                 not_processed_list.append(line)
+                progress.setValue(i)
                 
             iface.messageBar().clearWidgets()
 
             # add lines layer to canvas
-            QgsMapLayerRegistry.instance().addMapLayer(lines_layer)            
+            QgsMapLayerRegistry.instance().addMapLayer(lines_layer)
+            self.addedLayers += 1            
 
             if not not_processed_list:
                 QMessageBox.information(None, 'Success', 'All lines drawn without error')
             else:     
-                #error_list = []
-                #for line in not_processed_list:
-                #    output_line = line[0], 'to', line[1]
-                #    error_list.append(str(output_line))                  
                 QMessageBox.information(None, 'Error', str(len(not_processed_list))+' out of '+str(len(lines_list))+' line(s) not drawn.')
