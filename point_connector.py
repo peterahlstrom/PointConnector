@@ -227,7 +227,7 @@ class PointConnector:
                 csv_features = processing.features(csv_layer)
                 for line in csv_features:
                     attrs = line.attributes()
-                    lines_list.append((attrs[0], attrs[1]))
+                    lines_list.append(((str(attrs[0])), str(attrs[1])))
             else:
                 csvPath = self.dlg.csvPathLineEdit.text()
                 # test if csv is valid
