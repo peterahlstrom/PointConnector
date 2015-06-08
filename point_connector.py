@@ -27,7 +27,6 @@ import resources_rc
 # Import the code for the dialog
 from point_connector_dialog import PointConnectorDialog
 import os.path
-import processing
 from qgis.utils import *
 import time
 import codecs
@@ -224,10 +223,10 @@ class PointConnector:
 
             if chosenCsv != 'Choose layer...':
                 csv_layer = layers[chosenCsv]
-                csv_features = processing.features(csv_layer)
+                csv_features = csv_layer.getFeatures()
                 for line in csv_features:
                     attrs = line.attributes()
-                    lines_list.append(((str(attrs[0])), str(attrs[1])))
+                    lines_list.append(((unicode(attrs[0])), unicode(attrs[1])))
             else:
                 csvPath = self.dlg.csvPathLineEdit.text()
                 # test if csv is valid
@@ -267,13 +266,13 @@ class PointConnector:
             pr.addAttributes ([ QgsField('id', QVariant.Int), QgsField('from', QVariant.String), QgsField('to', QVariant.String)] )
 
             #creating point coordinate dict
-            points = processing.features(point_layer)
+            points = point_layer.getFeatures()
             points_dict = {}
             
             #Progress bar widget 
             progressMessageBar = iface.messageBar().createMessage("Building point database...")
             progress = QProgressBar()
-            progress.setMaximum(len(points))
+            progress.setMaximum(point_layer.featureCount())
             progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
             progressMessageBar.layout().addWidget(progress)
             iface.messageBar().pushWidget(progressMessageBar, iface.messageBar().INFO)
@@ -284,10 +283,7 @@ class PointConnector:
                 attrs = p.attributes()
                 p = geom.asPoint()
                 key = attrs[point_name_index]
-                if type(key) == type(int()): #if name field in shp is int
-                    points_dict[str(key)] = p #attrs[point_name_index] = name field
-                else:
-                    points_dict[key] = p
+                points_dict[unicode(key)] = p #attrs[point_name_index] = name field
                 i += 1
                 progress.setValue(i)
                 
