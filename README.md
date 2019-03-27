@@ -43,7 +43,7 @@ PointConnector has also shown to be a useful tool for creating input to the FME 
 Licence
 -------
 
-This plugin was developed by Peter Ahlstrom in 2014-2015.
+This plugin was developed by Peter Ahlstrom in 2014-2019.
 It is free software and licensed under the GNU General Public Licence v2.
 
 
