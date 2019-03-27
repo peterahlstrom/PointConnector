@@ -19,22 +19,26 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from __future__ import absolute_import
+from builtins import str
+from builtins import object
+from qgis.PyQt.QtCore import QCoreApplication, QObject, QSettings, QVariant, Qt
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QProgressBar, QMessageBox
+from qgis.core import Qgis, QgsGeometry, QgsVectorLayer, QgsField,QgsProject, QgsFeature, QgsPoint
 # Initialize Qt resources from file resources.py
-import resources_rc
+from . import resources_rc
 # Import the code for the dialog
-from point_connector_dialog import PointConnectorDialog
+from .point_connector_dialog import PointConnectorDialog
 import os.path
-from qgis.utils import *
+from qgis.utils import iface
 import time
 import codecs
 import re
 
 
 
-class PointConnector:
+class PointConnector(object):
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -169,7 +173,7 @@ class PointConnector:
         self.action.setWhatsThis("Connect points")
         self.action.setStatusTip("Connect points following a from-to list")
 
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+        self.action.triggered.connect(self.run)
 
         if hasattr(self.iface, "addPluginToVectorMenu"):
             self.iface.addVectorToolBarIcon(self.action)
@@ -193,9 +197,11 @@ class PointConnector:
         # See if OK was pressed
         if result == 1:
             # create layers dict
+            #layers = QgsProject.instance().mapLayers()
             layers = {}
-            for layer in iface.mapCanvas().layers():
-                layers[layer.name()] = layer
+            for name, layer in QgsProject.instance().mapLayers().items():
+               layers[layer.name()] = layer
+            
             
             #choose point-source
             chosenPoint = self.dlg.pointsComboBox.currentText()
@@ -226,7 +232,7 @@ class PointConnector:
                 csv_features = csv_layer.getFeatures()
                 for line in csv_features:
                     attrs = line.attributes()
-                    lines_list.append(((unicode(attrs[0])), unicode(attrs[1])))
+                    lines_list.append(((str(attrs[0])), str(attrs[1])))
             else:
                 csvPath = self.dlg.csvPathLineEdit.text()
                 # test if csv is valid
@@ -275,7 +281,7 @@ class PointConnector:
             progress.setMaximum(point_layer.featureCount())
             progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
             progressMessageBar.layout().addWidget(progress)
-            iface.messageBar().pushWidget(progressMessageBar, iface.messageBar().INFO)
+            iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
 
             i = 0
             for p in points:
@@ -283,12 +289,12 @@ class PointConnector:
                 attrs = p.attributes()
                 p = geom.asPoint()
                 key = attrs[point_name_index]
-                points_dict[unicode(key)] = p #attrs[point_name_index] = name field
+                points_dict[str(key)] = p #attrs[point_name_index] = name field
                 i += 1
                 progress.setValue(i)
                 
             iface.messageBar().clearWidgets()
-            QgsMapLayerRegistry.instance().addMapLayer(point_layer)
+            QgsProject.instance().addMapLayer(point_layer)
 
 
             #Progress bar widget
@@ -297,14 +303,14 @@ class PointConnector:
             progress.setMaximum(len(lines_list))
             progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
             progressMessageBar.layout().addWidget(progress)
-            iface.messageBar().pushWidget(progressMessageBar, iface.messageBar().INFO)
+            iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
 
             #Drawing the lines
             i = 1
             not_processed_list = []
             
             for line in lines_list:
-              if (line[0] in points_dict.keys() and line[1] in points_dict.keys()):
+              if (line[0] in list(points_dict.keys()) and line[1] in list(points_dict.keys())):
                 frPoint = points_dict[line[0]]
                 toPoint = points_dict[line[1]]
                 attrs = [i, line[0], line[1]]
@@ -325,7 +331,7 @@ class PointConnector:
             iface.messageBar().clearWidgets()
 
             # add lines layer to canvas
-            QgsMapLayerRegistry.instance().addMapLayer(lines_layer)
+            QgsProject.instance().addMapLayer(lines_layer)
             self.addedLayers += 1            
 
             if not not_processed_list:
