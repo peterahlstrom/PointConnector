@@ -22,7 +22,7 @@
 
 import os
 
-from PyQt5 import QtGui, uic, QtCore,QtWidgets
+from qgis.PyQt import QtGui, uic, QtCore,QtWidgets
 from qgis.utils import iface
 from qgis.core import QgsProject
 

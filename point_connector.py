@@ -193,7 +193,7 @@ class PointConnector(object):
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
-        result = self.dlg.exec_()
+        result = self.dlg.exec()
         # See if OK was pressed
         if result == 1:
             # create layers dict
@@ -279,7 +279,7 @@ class PointConnector(object):
             progressMessageBar = iface.messageBar().createMessage("Building point database...")
             progress = QProgressBar()
             progress.setMaximum(point_layer.featureCount())
-            progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+            progress.setAlignment(Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
             progressMessageBar.layout().addWidget(progress)
             iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
 
@@ -301,7 +301,7 @@ class PointConnector(object):
             progressMessageBar = iface.messageBar().createMessage("Drawing lines...")
             progress = QProgressBar()
             progress.setMaximum(len(lines_list))
-            progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+            progress.setAlignment(Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
             progressMessageBar.layout().addWidget(progress)
             iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
 

@@ -1,6 +1,7 @@
 [general]
 name=PointConnector
 qgisMinimumVersion=3.4
+qgisMaximumVersion=4.99
 description=Creating lines between points following a from-to list.
 about=Creating lines between points following a from-to list. The points can be read from a shape-file or a point-layer in the QGIS document. The list can be in a csv-file or a table in the document.
 category=Vector
